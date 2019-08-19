@@ -84,3 +84,6 @@
 
 # scan temporary files
 **/fastlane/test_output
+
+# dotenv
+.env.default
