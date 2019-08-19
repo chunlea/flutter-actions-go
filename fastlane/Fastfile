@@ -1,0 +1,54 @@
+skip_docs
+
+platform :android do
+  desc "Submit a new Beta Build to Crashlytics Beta"
+  lane :beta do
+    flutter_clean
+    flutter_build format: :appbundle
+
+    upload_to_play_store(
+      track: 'alpha',
+      aab: 'build/app/outputs/bundle/release/app.aab',
+      skip_upload_screenshots: true,
+      skip_upload_images: true,
+      json_key_data: ENV['SUPPLY_JSON_KEY_DATA']
+    )
+  end
+end
+
+platform :ios do
+  desc "Push a new beta build to TestFlight"
+  lane :beta do
+    flutter_clean
+    flutter_build format: :ios
+
+    sync_code_signing
+
+    build_ios_app(
+      workspace: 'ios/Runner.xcworkspace',
+      scheme: 'Runner',
+      export_method: 'app-store',
+    )
+
+    upload_to_testflight
+  end
+end
+
+private_lane :flutter_clean do |options|
+  Dir.chdir("..") do
+    sh "flutter clean"
+  end
+end
+
+private_lane :flutter_build do |options|
+  build_number = number_of_commits(all: true)
+
+  Dir.chdir("..") do
+    case options.fetch(:format).to_s
+    when "appbundle"
+      sh "flutter build appbundle --release --build-number #{build_number}"
+    when "ios"
+      sh "flutter build ios --release --build-number #{build_number}"
+    end
+  end
+end

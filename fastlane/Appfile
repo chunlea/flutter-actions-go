@@ -1,0 +1,10 @@
+for_platform :ios do
+  app_identifier("com.chunlea.actionsGo") # The bundle identifier of your app
+  apple_id(ENV['GYM_APPLE_ID']) # Your Apple email address
+  itc_team_id(ENV['GYM_ITC_TEAM_ID']) # App Store Connect Team ID
+  team_id(ENV['GYM_TEAM_ID']) # Developer Portal Team ID
+end
+
+for_platform :android do
+  package_name("com.chunlea.actions_go") # e.g. com.krausefx.app
+end
