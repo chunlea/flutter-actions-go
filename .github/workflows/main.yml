@@ -1,0 +1,33 @@
+name: CI
+
+on: [push]
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [macOS-10.14]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - uses: actions/checkout@master
+    - uses: chunlea/actions-setup-flutter@releases/vtest
+
+    - name: Test Flutter
+      run: flutter doctor
+
+    - name: Install Fastlane
+      run: bundle install
+
+    - name: Upgrading Flutter packages
+      run: flutter pub get
+
+    - name: Running Flutter Test
+      run: flutter test
+
+    # - name: Build Appbundle in release
+    #   run: bundle exec fastlane android beta
+
+    - name: Build ios in release
+      run: bundle exec fastlane ios beta
